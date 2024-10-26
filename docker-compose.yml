@@ -23,7 +23,7 @@ services:
       WORDPRESS_DEBUG: 1
     volumes:
       - ../logs/:/var/logs/apache2
-      - .:/var/www/html/wp-content/plugins/your-plugin-name
+      - .:/var/www/html/wp-content/plugins/custom-wordpress-blocks
     ports:
       - "8000:80"
 

@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "cwb/custom-button",
+	"version": "0.1.0",
+	"title": "cwb button",
+	"category": "flutterwave",
+	"icon": "smiley",
+	"description": "Example Button Block.",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"amount": { "type": "integer", "default": 5 },
+        "currency": { "type": "string", "default": "USD" },
+        "type": { "type": "string", "enum": ["Primary", "GooglePay", "ApplePay"] },
+		"useCurrentUserEmail": { "type": "boolean", "default": false },
+		"useLocalCurrency" : { "type": "boolean", "default": false },
+        "backgroundColor": { "type": "string", "default": "#FF9B00" },
+		"fontColor": { "type": "string", "default": "#000000" },
+		"label": { "type": "string", "default": "Gold Subscription" }
+	},
+	"textdomain": "cwp",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
+}
