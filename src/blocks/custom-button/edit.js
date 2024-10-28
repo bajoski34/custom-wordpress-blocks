@@ -3,6 +3,8 @@
  */
 import { useState } from 'react';
 
+import { Button } from 'blox';
+
 /**
  * Retrieves the translation of text.
  *
@@ -16,7 +18,7 @@ import { __ } from '@wordpress/i18n';
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { InspectorControls, BlockAlignmentToolbar, BlockControls,  useBlockProps, JustifyContentControl } from '@wordpress/block-editor';
 import { PanelBody, TextControl, ColorPicker, SelectControl, ToggleControl, ColorPalette } from '@wordpress/components';
 
 /**
@@ -26,7 +28,26 @@ import { PanelBody, TextControl, ColorPicker, SelectControl, ToggleControl, Colo
  * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
  */
 import './editor.scss';
+import 'blox/dist/assets/button.css';
 
+const ButtonAlignmentToolbar = ({ attributes, setAttributes }) => (
+	<BlockControls>
+        <BlockAlignmentToolbar 
+            value={ attributes.align }
+            onChange={
+                (val) => setAttributes({ align: val })
+            }
+            controls={ [ 'center', 'wide', 'full' ] }
+        />
+        {/* <JustifyContentControl
+			value={ attributes.justification }
+			onChange={ ( next ) => {
+				setAttributes( { justification: next } );
+			} }
+            allowedControls={[ 'left', 'center', 'right' ]}
+		/> */}
+	</BlockControls>
+);
 
 const FontColorPalette = ({ label, value, onChange}) => {
 	const [ color, setColor ] = useState ( value )
@@ -40,10 +61,7 @@ const FontColorPalette = ({ label, value, onChange}) => {
 		colors={ colors }
 		aria-label={ label }
 		value={ color }
-		onChange={ ( newColor ) => {
-			setColor( newColor )
-			onChange( newColor )
-		} }
+		onChange={ onChange }
 	  />
 	);
 };
@@ -77,7 +95,17 @@ const ButtonController = ({ attributes, setAttributes }) => {
 
     return (
         <InspectorControls>
-            <PanelBody title="Button Settings">
+            <PanelBody title="Payment Settings">
+                <SelectControl
+                    label="Button Variant"
+                    value={ attributes.variant }
+                    options={ [
+                        { label: 'Primary', value: 'primary' },
+                        { label: 'ApplePay', value: 'apple' },
+                        { label: 'GooglePay', value: 'google' },
+                    ] }
+                    onChange={ (val) => setAttributes({ variant: val }) }
+                />
                 <TextControl
                     label="Amount"
                     value={ attributes.amount }
@@ -86,11 +114,6 @@ const ButtonController = ({ attributes, setAttributes }) => {
                 <CurrencySelectControl
                     value={ attributes.currency }
                     onChange={ handleCurrencyChange }
-                />
-				<TextControl
-                    label="Label"
-                    value={ attributes.label }
-                    onChange={ (val) => setAttributes({ label: val }) }
                 />
                 <ToggleControl
                     label="Use user's local currency"
@@ -102,17 +125,27 @@ const ButtonController = ({ attributes, setAttributes }) => {
                     checked={ attributes.useCurrentUserEmail }
                     onChange={ (val) => setAttributes({ useCurrentUserEmail: val }) }
                 />
-
-				<FontColorPalette label="Font Color" value={ attributes.fontColor } onChange={ (val) => setAttributes({ fontColor: val }) } />
-                <div style={{ marginBottom: '16px' }}>
-                    <label style={{ display: 'block', marginBottom: '8px' }}>
-                        Button Color
-                    </label>
-                    <ColorPicker
-                        color={ attributes.backgroundColor }
-                        onChangeComplete={ (val) => setAttributes({ backgroundColor: val.hex }) }
-                    />
-                </div>
+            </PanelBody>
+            <PanelBody title='Customization Settings'>
+                {attributes.variant !== 'google' && (
+                    <>
+                        <TextControl
+                            label="Label"
+                            value={ attributes.label }
+                            onChange={ (val) => setAttributes({ label: val }) }
+                        />
+                        <FontColorPalette label="Font Color" value={ attributes.fontColor } onChange={ (val) => setAttributes({ fontColor: val }) } />
+                        <div style={{ marginBottom: '16px' }}>
+                            <label style={{ display: 'block', marginBottom: '8px' }}>
+                                Button Color
+                            </label>
+                            <ColorPicker
+                                color={ attributes.backgroundColor }
+                                onChangeComplete={ (val) => setAttributes({ backgroundColor: val.hex }) }
+                            />
+                        </div>
+                    </>
+                )}
             </PanelBody>
         </InspectorControls>
     );
@@ -128,17 +161,41 @@ const ButtonController = ({ attributes, setAttributes }) => {
  */
 export default function Edit(props) {
     const { attributes, setAttributes } = props;
-    const blockProps = useBlockProps();
+    const blockProps = useBlockProps({
+        className: `align${ attributes.align }`
+    });
 
     return (
-        <div { ...blockProps }>
+        <div { ...blockProps } style={{ alignItems: attributes.align }}>
+        <ButtonAlignmentToolbar attributes={ attributes } setAttributes={ setAttributes } />
             <ButtonController attributes={ attributes } setAttributes={ setAttributes } />
-            <button
+            {/* <button
                 style={{ backgroundColor: attributes.backgroundColor, color: attributes.fontColor }}
                 onClick={(e) => e.preventDefault()}
             >
                {attributes.label}
-            </button>
+            </button> */}
+			{attributes && attributes.variant == 'primary' && (
+                <Button 
+                    label={ attributes.label } 
+                    backgroundColor={ attributes.backgroundColor }
+                    fontColor={ attributes.fontColor }
+                />
+            )}
+
+            {attributes && attributes.variant == 'google' && (
+                <Button 
+                    paymentProvider='google'
+                />
+            )}
+
+            {attributes && attributes.variant == 'apple' && (
+                <Button 
+                    paymentProvider='apple'
+                    backgroundColor={ attributes.backgroundColor }
+                    fontColor={ attributes.fontColor }
+                />
+            )}
         </div>
     );
 }

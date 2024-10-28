@@ -24,6 +24,7 @@
 function multiblock_register_blocks() {
 	$custom_blocks = array (
 		'custom-button',
+        'custom-nbutton'
 	);
 
 	//TODO: Handle when plugin is installed as a repo. auto set the environment to development.
@@ -32,3 +33,17 @@ function multiblock_register_blocks() {
 	}
 }
 add_action( 'init', 'multiblock_register_blocks' );
+
+function my_custom_block_category($categories) {
+    return array_merge(
+        $categories,
+        array(
+            array(
+                'slug'  => 'flutterwave',  // Unique identifier
+                'title' => __('Flutterwave', 'cwp'),  // Category name
+                'icon'  => 'admin-generic',  // Optional icon
+            ),
+        )
+    );
+}
+add_filter('block_categories_all', 'my_custom_block_category', 10, 1);

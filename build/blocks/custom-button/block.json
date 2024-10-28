@@ -9,7 +9,12 @@
   "description": "Example Button Block.",
   "example": {},
   "supports": {
-    "html": false
+    "html": false,
+    "align": false,
+    "alignWide": false,
+    "typography": {
+      "fontSize": true
+    }
   },
   "attributes": {
     "amount": {
@@ -20,13 +25,9 @@
       "type": "string",
       "default": "USD"
     },
-    "type": {
+    "variant": {
       "type": "string",
-      "enum": [
-        "Primary",
-        "GooglePay",
-        "ApplePay"
-      ]
+      "default": "primary"
     },
     "useCurrentUserEmail": {
       "type": "boolean",
@@ -46,7 +47,11 @@
     },
     "label": {
       "type": "string",
-      "default": "Gold Subscription"
+      "default": "Pay USD 5"
+    },
+    "align": {
+      "type": "string",
+      "default": "center"
     }
   },
   "textdomain": "cwp",

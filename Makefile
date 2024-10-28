@@ -27,10 +27,12 @@ restart:
 
 fresh:
 	@echo "Creating a new instance with a newly created volume..."
+	@sudo rm -rf ../logs/
 	@docker-compose down -v && docker-compose up -d
 
 clean:
 	@echo "Removing all created volumes..."
+	@sudo rm -rf ../logs/
 	@docker-compose down -v
 
 # Main target to list commands and provide help
